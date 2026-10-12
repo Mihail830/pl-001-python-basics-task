@@ -104,17 +104,9 @@ def update_product(
 
 
 def delete_product(storage: list[Product], product_id: int) -> int | None:
-    """Remove the product stored under ``product_id`` from ``storage``.
-
-    Args:
-        storage: The product store to remove from; modified in place on
-            success.
-        product_id: The identifier of the product to remove.
-
-    Returns:
-        ``product_id`` when a product was removed, or ``None`` when no
-        product carried that identifier (``storage`` is left unchanged and
-        a message is printed).
-    """
-    # TODO: реализуйте функцию (используйте своё решение части 2)
-    return 0
+    index = _find_index(storage, product_id)
+    if index is None:
+        print(f"no product with id {product_id}")
+        return None
+    del storage[index]
+    return product_id
