@@ -58,6 +58,9 @@ the id) and those two words is joined with single spaces into the
 product name, so a multi-word name such as Gibson SG Junior needs no
 quoting."""
 
+_NAME_AND_TWO_NUMBERS: Final = 3
+_ID_AND_NAME_AND_TWO_NUNBERS: Final = 4
+
 
 def show_help() -> None:
    print(HELP_TEXT)
@@ -72,6 +75,50 @@ def _parse_fields(args: list[str]) -> tuple[str, Decimal, int]:
     price = Decimal(args[-2])
     quantity = int(args[-1])
     return name, price, quantity
+
+
+def _run_read(storage: list[Product], args: list[str]) -> None:
+    print_result(read_product(storage, int(args[0])))
+
+
+def _run_delete(storage: list[Product], args: list[str]) -> None:
+    print_result(delete_product(storage, int(args[0])))
+
+
+def _run_create(storage: list[Product], args: list[str]) -> None:
+    print_result(create_product(storage, _parse_fields(args)))
+
+
+def _run_update(storage: list[Product], args: list[str]) -> None:
+    product_id = int(args[0])
+    fields = _parse_fields(args[1:])
+    print_result(update_product(storage, product_id, fields))
+
+
+def _run_show(storage: list[Product], args: list[str]) -> None:
+    print(get_storage_str_representation(storage))
+
+
+def _run_help(storage: list[Product], args: list[str]) -> None:
+    show_help()
+
+
+def _run_exit(storage: list[Product], args: list[str]) -> None:
+    return False
+
+
+type _Handler = callable[[list[Product], list[str]], bool | None]
+
+
+_COMMANDS: Final[dict[str, tuple[_Handler, int | None]]] = {
+    "help": (_run_help, 0),
+    "exit": (_run_exit, 0),
+    "show": (_run_show, 0),
+    "read": (_run_read, 1),
+    "delete": (_run_delete, 1),
+    "create": (_run_create, _NAME_AND_TWO_NUMBERS),
+    "update": (_run_update, _ID_AND_NAME_AND_TWO_NUNBERS),
+}
 
 
 def run_command(storage: list[Product], line: str) -> bool:
