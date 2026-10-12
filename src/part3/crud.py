@@ -48,15 +48,15 @@ def create_product(
 
     product_id = generate_product_id(storage)
     storage.append((product_id, name, normalize_price(fields[1]), fields[2]))
+    return product_id
 
 
 def read_product(storage: list[Product], product_id: int) -> Product | None:
-    def read_product(storage: list[Product], product_id: int) -> Product | None:
-        for product in storage:
-            if product[PRODUCT_ID_INDEX] == product_id:
-                return product
-        print(f"no product with id {product_id}")
-        return None
+    for product in storage:
+        if product[PRODUCT_ID_INDEX] == product_id:
+            return product
+    print(f"no product with id {product_id}")
+    return None
 
 
 def _find_index(storage: list[Product], product_id: int) -> int | None:

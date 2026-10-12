@@ -31,14 +31,14 @@ from .storage import Product
 # решение части 2)
 PRICE_PRECISION: Final[int] = 2
 PRICE_STEP: Final = Decimal(1).scaleb(-PRICE_PRECISION)
-_WHITESPACE_RUN: Final = re.complite(r"\s+")
+_WHITESPACE_RUN: Final = re.compile(r"\s+")
 _CELL_PADDING: Final = 2
 
 # Column headers of the table produced by get_storage_str_representation,
 # left to right. The width of each column is not fixed here -- it is
 # measured per call from the data (see the function).
 # TODO: задайте заголовки столбцов таблицы
-TABLE_HEADERS: Final[tuple[str, ...]] = ("id", "name", "price", "quantity")
+TABLE_HEADERS: Final[tuple[str, ...]] = ("ID", "name", "price", "quantity")
 
 
 def normalize_price(price: Decimal) -> Decimal:
@@ -57,12 +57,12 @@ def _measure_widths(rows: list[tuple[str, ...]]) -> list[int]:
 
 
 def _render_row(cells: tuple[str, ...], widths: list[int]) -> str:
-    padded = (cell.ljust(widths) for cell, width in zip(cells, widths))
+    padded = (cell.ljust(width) for cell, width in zip(cells, widths))
     return "| " + " | ".join(padded) + " |"
 
 
 def _render_separator(widths: list[int]) -> str:
-    runs = ("-" * (widths + _CELL_PADDING) for width in widths)
+    runs = ("-" * (width + _CELL_PADDING) for width in widths)
     return "|" + "|".join(runs) + "|"
 
 

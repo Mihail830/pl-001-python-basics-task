@@ -29,6 +29,7 @@ store is left untouched and the loop keeps running; only ``exit`` stops
 it.
 """
 
+from collections.abc import Callable
 from decimal import Decimal, InvalidOperation
 from typing import Final
 
@@ -42,24 +43,23 @@ from .storage import Product
 from .utils import get_storage_str_representation
 
 
-PROMPT: Final[str] = "admin>"
-HELP_TEXT: Final[str] = """"Available commands:
-* help -- print the list of commands and what each one does;
-* exit -- leave the loop and end the program;
-* show -- print the whole store as a text table;
-* create <name...> <price> <quantity> -- add a product;
-* read <id> -- print one product;
-* update <id> <name...> <price> <quantity> -- overwrite a product;
-* delete <id> -- remove a product.
+PROMPT: Final[str] = "admin> "
+HELP_TEXT: Final[str] = """Available commands:
+  help                                       show this message
+  exit                                       leave the console
+  show                                       print the whole store as a table
+  create <name...> <price> <quantity>        add a product, print its new id
+  read <id>                                  print the product with that id
+  update <id> <name...> <price> <quantity>   overwrite that product's fields
+  delete <id>                                remove the product with that id
 
-For create and update the price and quantity are always the last
-two words of the line; everything between the verb (and, for update,
-the id) and those two words is joined with single spaces into the
-product name, so a multi-word name such as Gibson SG Junior needs no
-quoting."""
+For create and update the price and quantity are the last two words of the
+line; everything before them is the product name, so it may contain spaces
+(for example "Gibson SG Junior") and needs no quoting."""
 
 _NAME_AND_TWO_NUMBERS: Final = 3
-_ID_AND_NAME_AND_TWO_NUNBERS: Final = 4
+_ID_AND_NAME_AND_TWO_NUMBERS: Final = 4
+_VARIADIC: Final = frozenset({"create", "update"})
 
 
 def show_help() -> None:
@@ -104,11 +104,11 @@ def _run_help(storage: list[Product], args: list[str]) -> None:
     show_help()
 
 
-def _run_exit(storage: list[Product], args: list[str]) -> None:
+def _run_exit(storage: list[Product], args: list[str]) -> bool | None:
     return False
 
 
-type _Handler = callable[[list[Product], list[str]], bool | None]
+type _Handler = Callable[[list[Product], list[str]], bool | None]
 
 
 _COMMANDS: Final[dict[str, tuple[_Handler, int | None]]] = {
@@ -118,13 +118,17 @@ _COMMANDS: Final[dict[str, tuple[_Handler, int | None]]] = {
     "read": (_run_read, 1),
     "delete": (_run_delete, 1),
     "create": (_run_create, _NAME_AND_TWO_NUMBERS),
-    "update": (_run_update, _ID_AND_NAME_AND_TWO_NUNBERS),
+    "update": (_run_update, _ID_AND_NAME_AND_TWO_NUMBERS),
 }
 
 
 def _accepts(verb: str, args: list[str]) -> bool:
     _, arity = _COMMANDS[verb]
-    return arity is None or len(args) == arity
+    if arity is None:
+        return True
+    if verb in _VARIADIC:
+        return len(args) >= arity
+    return len(args) == arity
 
 
 def run_command(storage: list[Product], line: str) -> bool:
