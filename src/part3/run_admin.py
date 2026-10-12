@@ -67,6 +67,13 @@ def print_result(result: object) -> None:
         print(result)
 
 
+def _parse_fields(args: list[str]) -> tuple[str, Decimal, int]:
+    name = " ".join(args[:-2])
+    price = Decimal(args[-2])
+    quantity = int(args[-1])
+    return name, price, quantity
+
+
 def run_command(storage: list[Product], line: str) -> bool:
     """Parse one console line and carry out the command it names.
 
