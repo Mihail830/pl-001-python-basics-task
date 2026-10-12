@@ -17,6 +17,7 @@ Presentation:
   text table meant to be printed to a terminal; each column is sized to
   the longest value it holds in that particular call.
 """
+
 import re
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Final
@@ -49,7 +50,7 @@ def normalize_product_name(name: str) -> str:
 
 
 def _measure_widths(rows: list[tuple[str, ...]]) -> list[int]:
-    return[
+    return [
         max(len(header), *(len(row[i]) for row in rows))
         for i, header in enumerate(TABLE_HEADERS)
     ]
@@ -66,9 +67,9 @@ def _render_separator(widths: list[int]) -> str:
 
 
 def get_storage_str_representation(storage: list[Product]) -> str:
-   rows = [tuple(str(value) for value in product) for product in storage]
-   widths = _measure_widths(rows)
+    rows = [tuple(str(value) for value in product) for product in storage]
+    widths = _measure_widths(rows)
 
-   lines = [_render_row(TABLE_HEADERS, widths), _render_separator(widths)]
-   lines.extend(_render_row(row, widths) for row in rows)
-   return "\n".join(lines)
+    lines = [_render_row(TABLE_HEADERS, widths), _render_separator(widths)]
+    lines.extend(_render_row(row, widths) for row in rows)
+    return "\n".join(lines)

@@ -31,33 +31,32 @@ from .utils import normalize_price, normalize_product_name
 
 def generate_product_id(storage: list[Product]) -> int:
     if not storage:
-            return PRODUCT_ID_MIN
+        return PRODUCT_ID_MIN
     return max(p[PRODUCT_ID_INDEX] for p in storage) + 1
-    
 
 
 def create_product(
     storage: list[Product], fields: tuple[str, Decimal, int]
 ) -> int | None:
-   name = normalize_product_name(fields[0])
-   if not name:
-       print("product name must not be blank")
-       return None
-   if _name_taken(storage, name):
-       print(f"product name '{name}' is already taken")
-       return None
+    name = normalize_product_name(fields[0])
+    if not name:
+        print("product name must not be blank")
+        return None
+    if _name_taken(storage, name):
+        print(f"product name '{name}' is already taken")
+        return None
 
-   product_id = generate_product_id(storage)
-   storage.append((product_id, name, normalize_price(fields[1]), fields[2]))
+    product_id = generate_product_id(storage)
+    storage.append((product_id, name, normalize_price(fields[1]), fields[2]))
 
 
 def read_product(storage: list[Product], product_id: int) -> Product | None:
-   def read_product(storage: list[Product], product_id: int) -> Product | None:
-    for product in storage:
-        if product[PRODUCT_ID_INDEX] == product_id:
-            return product
-    print(f"no product with id {product_id}")
-    return None
+    def read_product(storage: list[Product], product_id: int) -> Product | None:
+        for product in storage:
+            if product[PRODUCT_ID_INDEX] == product_id:
+                return product
+        print(f"no product with id {product_id}")
+        return None
 
 
 def _find_index(storage: list[Product], product_id: int) -> int | None:
@@ -75,34 +74,33 @@ def _name_taken(
     storage: list[Product], name: str, except_id: int | None = None
 ) -> bool:
     return any(
-        product[NAME_INDEX] == name
-        and product[PRODUCT_ID_INDEX] != except_id
+        product[NAME_INDEX] == name and product[PRODUCT_ID_INDEX] != except_id
         for product in storage
     )
-   
+
 
 def update_product(
     storage: list[Product],
     product_id: int,
     fields: tuple[str, Decimal, int],
 ) -> Product | None:
-   name = normalize_product_name(fields[0])
-   if not name:
-       print("product name must not be blank")
-       return None
+    name = normalize_product_name(fields[0])
+    if not name:
+        print("product name must not be blank")
+        return None
 
-   index = _find_index(storage, product_id)
-   if index is None:
-       print(f"no product with id {product_id}")
-       return None
+    index = _find_index(storage, product_id)
+    if index is None:
+        print(f"no product with id {product_id}")
+        return None
 
-   if _name_taken(storage, name, except_id=product_id):
-       print(f"product name '{name}' is already taken")
-       return None
+    if _name_taken(storage, name, except_id=product_id):
+        print(f"product name '{name}' is already taken")
+        return None
 
-   updated = (product_id, name, normalize_price(fields[1]), fields[2])
-   storage[index] = updated
-   return updated
+    updated = (product_id, name, normalize_price(fields[1]), fields[2])
+    storage[index] = updated
+    return updated
 
 
 def delete_product(storage: list[Product], product_id: int) -> int | None:

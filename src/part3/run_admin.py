@@ -43,7 +43,7 @@ from .utils import get_storage_str_representation
 
 
 PROMPT: Final[str] = "admin>"
-HELP_TEXT: Final[str] =""""Available commands:
+HELP_TEXT: Final[str] = """"Available commands:
 * help -- print the list of commands and what each one does;
 * exit -- leave the loop and end the program;
 * show -- print the whole store as a text table;
@@ -63,7 +63,8 @@ _ID_AND_NAME_AND_TWO_NUNBERS: Final = 4
 
 
 def show_help() -> None:
-   print(HELP_TEXT)
+    print(HELP_TEXT)
+
 
 def print_result(result: object) -> None:
     if result is not None:
