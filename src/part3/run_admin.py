@@ -121,28 +121,21 @@ _COMMANDS: Final[dict[str, tuple[_Handler, int | None]]] = {
 }
 
 
+def _accepts(verb: str, args: list[str]) -> bool:
+    _, arity = _COMMANDS[verb]
+    return arity is None or len(args) == arity
+
+
 def run_command(storage: list[Product], line: str) -> bool:
-    """Parse one console line and carry out the command it names.
+    words = line.split()
+    verb = words[0] if words else ""
 
-    Args:
-        storage: The product store shared across the session; mutated in
-            place by the ``create``, ``update`` and ``delete`` commands.
-        line: One line of console input, already stripped of surrounding
-            whitespace.
+    if verb not in _COMMANDS or not _accepts(verb, words[1:]):
+        print(f"'{line}' is not a command")
+        return True
 
-    Returns:
-        ``True`` to keep the read-eval-print loop running, or ``False``
-        once the ``exit`` command has been seen. A line that is not a
-        known command prints a notice and still returns ``True``.
-
-    Raises:
-        ValueError: If an id or quantity argument of a CRUD command does
-            not parse as a base-10 integer.
-        decimal.InvalidOperation: If the price argument of ``create`` or
-            ``update`` does not parse as a decimal number.
-    """
-    # TODO: реализуйте функцию
-    return False
+    handler, _ = _COMMANDS[verb]
+    return handler(storage, words[1:]) is not False
 
 
 def main() -> None:
