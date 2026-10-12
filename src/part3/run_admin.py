@@ -42,9 +42,21 @@ from .storage import Product
 from .utils import get_storage_str_representation  # noqa: F401
 
 
-# TODO: задайте приглашение и текст справки
-PROMPT: Final[str] = ""
-HELP_TEXT: Final[str] = ""
+PROMPT: Final[str] = "admin>"
+HELP_TEXT: Final[str] =""""Available commands:
+* help -- print the list of commands and what each one does;
+* exit -- leave the loop and end the program;
+* show -- print the whole store as a text table;
+* create <name...> <price> <quantity> -- add a product;
+* read <id> -- print one product;
+* update <id> <name...> <price> <quantity> -- overwrite a product;
+* delete <id> -- remove a product.
+
+For create and update the price and quantity are always the last
+two words of the line; everything between the verb (and, for update,
+the id) and those two words is joined with single spaces into the
+product name, so a multi-word name such as Gibson SG Junior needs no
+quoting."""
 
 
 def show_help() -> None:
