@@ -39,25 +39,16 @@ def generate_product_id(storage: list[Product]) -> int:
 def create_product(
     storage: list[Product], fields: tuple[str, Decimal, int]
 ) -> int | None:
-    """Append a new product to ``storage`` and return its new identifier.
+   name = normalize_product_name(fields[0])
+   if not name:
+       print("product name must not be blank")
+       return None
+   if _name_taken(storage, name):
+       print(f"product name '{name}' is already taken")
+       return None
 
-    Args:
-        storage: The product store to append to; modified in place on
-            success.
-        fields: A ``(name, price, quantity)`` tuple describing the product.
-            ``name`` is normalised (surrounding whitespace stripped,
-            lower-cased) before it is stored or compared. ``price`` is a
-            :class:`~decimal.Decimal` amount and is rounded to the stored
-            money precision before it is saved.
-
-    Returns:
-        The identifier generated for the new product, or ``None`` when
-        ``name`` is blank once normalised or a product with the same
-        normalised name already exists. In the ``None`` case ``storage``
-        is left unchanged and an explanatory message is printed.
-    """
-    # TODO: реализуйте функцию
-    return 0
+   product_id = generate_product_id(storage)
+   storage.append((product_id, name, normalize_price(fields[1]), fields[2]))
 
 
 def read_product(storage: list[Product], product_id: int) -> Product | None:
