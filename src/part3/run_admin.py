@@ -60,24 +60,11 @@ quoting."""
 
 
 def show_help() -> None:
-    """Print the command reference to stdout.
-
-    The text is the module-level :data:`HELP_TEXT` constant, printed as
-    is: a heading, one line per command with a short description, and a
-    note on how multi-word names are parsed.
-    """
-    # TODO: реализуйте функцию
-
+   print(HELP_TEXT)
 
 def print_result(result: object) -> None:
-    """Print a CRUD result to stdout unless it is ``None``.
-
-    Args:
-        result: The value returned by a CRUD operation. ``None`` means the
-            operation already reported its own failure, so nothing is
-            printed in that case.
-    """
-    # TODO: реализуйте функцию
+    if result is not None:
+        print(result)
 
 
 def run_command(storage: list[Product], line: str) -> bool:
