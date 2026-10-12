@@ -48,26 +48,27 @@ def normalize_product_name(name: str) -> str:
     return _WHITESPACE_RUN.sub(" ", name.strip()).lower()
 
 
-# TODO: при необходимости добавьте свои вспомогательные функции
+def _measure_widths(rows: list[tuple[str, ...]]) -> list[int]:
+    return[
+        max(len(header), *(len(row[i]) for row in rows))
+        for i, header in enumerate(TABLE_HEADERS)
+    ]
+
+
+def _render_row(cells: tuple[str, ...], widths: list[int]) -> str:
+    padded = (cell.ljust(widths) for cell, width in zip(cells, widths))
+    return "| " + " | ".join(padded) + " |"
+
+
+def _render_separator(widths: list[int]) -> str:
+    runs = ("-" * (widths + _CELL_PADDING) for width in widths)
+    return "|" + "|".join(runs) + "|"
 
 
 def get_storage_str_representation(storage: list[Product]) -> str:
-    """Render the product store as a text table with data-sized columns.
+   rows = [tuple(str(value) for value in product) for product in storage]
+   widths = _measure_widths(rows)
 
-    The table has the columns named by :data:`TABLE_HEADERS` -- id, name,
-    price and quantity. Each column is made exactly as wide as the longest
-    value it carries in this call (its header counted), so the columns
-    line up when the string is printed to a terminal and no value is ever
-    truncated.
-
-    Args:
-        storage: The product store to render.
-
-    Returns:
-        A multi-line string: a header row, a dashed separator row, then
-        one row per product in ``storage`` in list order. When ``storage``
-        is empty only the header and separator rows are returned, sized to
-        the header labels.
-    """
-    # TODO: реализуйте функцию
-    return ""
+   lines = [_render_row(TABLE_HEADERS, widths), _render_separator(widths)]
+   lines.extend(_render_row(row, widths) for row in rows)
+   return "\n".join(lines)
