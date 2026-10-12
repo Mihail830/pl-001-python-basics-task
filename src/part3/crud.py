@@ -62,11 +62,13 @@ def read_product(storage: list[Product], product_id: int) -> Product | None:
 
 def _find_index(storage: list[Product], product_id: int) -> int | None:
     return next(
-        i
-        for i, product in enumerate(storage)
-        if product[PRODUCT_ID_INDEX] == product_id
-    ),
-    None
+        (
+            i
+            for i, product in enumerate(storage)
+            if product[PRODUCT_ID_INDEX] == product_id
+        ),
+        None,
+    )
 
 
 def _name_taken(
