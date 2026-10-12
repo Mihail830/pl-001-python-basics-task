@@ -67,6 +67,25 @@ def read_product(storage: list[Product], product_id: int) -> Product | None:
             return product
     print(f"no product with id {product_id}")
     return None
+
+
+def _find_index(storage: list[Product], product_id: int) -> int | None:
+    return next(
+        i
+        for i, product in enumerate(storage)
+        if product[PRODUCT_ID_INDEX] == product_id
+    ),
+    None
+
+
+def _name_taken(
+    storage: list[Product], name: str, except_id: int | None = None
+) -> bool:
+    return any(
+        product[NAME_INDEX] == name
+        and product[PRODUCT_ID_INDEX] != except_id
+        for product in storage
+    )
    
 
 def update_product(
